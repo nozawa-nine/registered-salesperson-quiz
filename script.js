@@ -2,97 +2,7 @@
 // 問題データ
 // ============================
 
-const questions = [
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品は、市販後にも、その安全性の確認が行われる仕組みとなっているが、その有効性については市販前に十分確認されているため、市販後に確認は行われない。",
-    answer: false,
-    explanation: "医薬品は、市販前に有効性や安全性について十分に確認されますが、市販後にも、実際の使用状況における有効性や安全性について継続的に確認されます。したがって、この記述は誤りです。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品は、人体にとって異物であるため、程度の差はあっても何らかの有害作用を生じる可能性がある。",
-    answer: true,
-    explanation: "医薬品は人体にとって異物であり、期待される薬効だけでなく、望ましくない作用を生じる可能性があります。そのため、適正な使用が重要です。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品は、正しく使用すれば副作用が起こることはない。",
-    answer: false,
-    explanation: "医薬品を適正に使用していても、副作用が起こる可能性があります。副作用は、医薬品の使用に伴って生じる望ましくない反応です。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品を使用する際には、用法、用量、使用上の注意などを守ることが重要である。",
-    answer: true,
-    explanation: "医薬品は、定められた用法・用量や使用上の注意を守って使用することが重要です。適正使用によって、期待される効果を得ながらリスクを抑えることにつながります。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品の効果や副作用には、使用する人の体質や体調などが影響することはない。",
-    answer: false,
-    explanation: "医薬品の効果や副作用には、年齢、体質、体調、併用している医薬品など、使用する人のさまざまな要因が影響することがあります。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "同じ医薬品であっても、使用する人によって効果や副作用の現れ方が異なる場合がある。",
-    answer: true,
-    explanation: "医薬品の効果や副作用には個人差があります。同じ医薬品を使用しても、体質や年齢、体調などによって反応が異なる場合があります。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品は、病気を治す目的で使用されるため、使用量を増やせば増やすほど効果も高くなる。",
-    answer: false,
-    explanation: "医薬品は、用量を増やせば効果が比例して高まるとは限りません。むしろ過量使用によって副作用や中毒などのリスクが高まることがあります。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品を使用する場合には、その医薬品について十分な情報を得たうえで、適正に使用することが重要である。",
-    answer: true,
-    explanation: "医薬品の適正使用には、効能・効果だけでなく、用法・用量、使用上の注意、副作用などについて理解することが重要です。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品の使用によって生じた副作用は、すべて使用者の責任であり、医薬品の安全対策とは関係がない。",
-    answer: false,
-    explanation: "医薬品の副作用については、使用者による適正使用だけでなく、医薬品そのものの安全性や市販後の安全対策なども重要です。",
-    exp: 10
-  },
-
-  {
-    category: "第1章｜医薬品に共通する特性と基本的な知識",
-    title: "医薬品の本質",
-    text: "医薬品は、適正に使用することによって、その有効性と安全性を最大限に確保することが重要である。",
-    answer: true,
-    explanation: "医薬品は、正しい用法・用量や使用上の注意を守るなど、適正に使用することが重要です。",
-    exp: 10
-  }
-];
+let questions = [];
 
 
 // ============================
@@ -140,6 +50,53 @@ const expElement = document.getElementById("exp");
 
 
 // ============================
+// CSVを読み込む
+// ============================
+
+async function loadQuestions() {
+
+  try {
+
+    const response = await fetch("questions.csv");
+
+    const text = await response.text();
+
+    const lines = text.trim().split(/\r?\n/);
+
+    // 1行目は見出しなので除外
+    const dataLines = lines.slice(1);
+
+    questions = dataLines.map(line => {
+
+      const columns = line.split(",");
+
+      return {
+        id: columns[0],
+        chapter: columns[1],
+        category: columns[2],
+        text: columns[3],
+        answer: columns[4].trim(),
+        explanation: columns[5],
+        exp: Number(columns[6]),
+        source: columns[7],
+        year: columns[8],
+        number: columns[9]
+      };
+
+    });
+
+    console.log("問題読み込み完了:", questions);
+
+  } catch (error) {
+
+    console.error("問題データの読み込みに失敗しました:", error);
+
+  }
+
+}
+
+
+// ============================
 // 画面切り替え
 // ============================
 
@@ -151,6 +108,7 @@ function showScreen(screen) {
   finishScreen.classList.add("hidden");
 
   screen.classList.remove("hidden");
+
 }
 
 
@@ -159,6 +117,14 @@ function showScreen(screen) {
 // ============================
 
 function startGame() {
+
+  if (questions.length === 0) {
+
+    alert("問題データを読み込んでいます。少し待ってからもう一度押してください。");
+
+    return;
+
+  }
 
   currentQuestion = 0;
   correctCount = 0;
@@ -171,6 +137,7 @@ function startGame() {
   showScreen(quizScreen);
 
   showQuestion();
+
 }
 
 
@@ -184,9 +151,10 @@ function showQuestion() {
 
   questionNumber.textContent = currentQuestion + 1;
 
-  category.textContent = question.category;
+  category.textContent =
+    question.chapter + "｜" + question.category;
 
-  questionTitle.textContent = question.title;
+  questionTitle.textContent = question.category;
 
   questionText.textContent = question.text;
 
@@ -230,6 +198,7 @@ function answerQuestion(userAnswer) {
   explanation.textContent = question.explanation;
 
   showScreen(resultScreen);
+
 }
 
 
@@ -250,6 +219,7 @@ function addExp(amount) {
   }
 
   updateStatus();
+
 }
 
 
@@ -285,6 +255,7 @@ function nextQuestion() {
     showQuestion();
 
   }
+
 }
 
 
@@ -304,6 +275,7 @@ function showFinish() {
   totalExpElement.textContent = totalExp;
 
   showScreen(finishScreen);
+
 }
 
 
@@ -326,16 +298,23 @@ startButton.addEventListener("click", startGame);
 
 trueButton.addEventListener("click", function() {
 
-  answerQuestion(true);
+  answerQuestion("○");
 
 });
 
 falseButton.addEventListener("click", function() {
 
-  answerQuestion(false);
+  answerQuestion("×");
 
 });
 
 nextButton.addEventListener("click", nextQuestion);
 
 restartButton.addEventListener("click", restartGame);
+
+
+// ============================
+// 起動時にCSVを読み込む
+// ============================
+
+loadQuestions();
