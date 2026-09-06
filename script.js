@@ -1,5 +1,6 @@
 let questions = [];
 let quizQuestions = [];
+let selectedQuestionCount = 10;
 
 let currentQuestion = 0;
 let correctCount = 0;
