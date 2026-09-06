@@ -233,7 +233,6 @@ function createQuizQuestions() {
   const shuffled =
     shuffleQuestions(questions);
 
-
   if (selectedQuestionCount === "all") {
 
     quizQuestions = shuffled;
@@ -252,7 +251,6 @@ function createQuizQuestions() {
   }
 
 }
-
 
 // ============================
 // ゲーム開始
