@@ -1,4 +1,5 @@
 let questions = [];
+let quizQuestions = [];
 
 let currentQuestion = 0;
 let correctCount = 0;
@@ -142,7 +143,6 @@ async function loadQuestions() {
 
           answer: row[4].trim()
             .replace("〇", "○")
-            .replace("✕", "×")
             .replace("✕", "×"),
 
           explanation: row[5].trim(),
@@ -198,6 +198,44 @@ function showScreen(screen) {
 
 
 // ============================
+// 問題をシャッフル
+// ============================
+
+function shuffleQuestions(array) {
+
+  const shuffled = [...array];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [shuffled[i], shuffled[j]] =
+      [shuffled[j], shuffled[i]];
+
+  }
+
+  return shuffled;
+
+}
+
+
+// ============================
+// 今回の出題問題を作る
+// ============================
+
+function createQuizQuestions() {
+
+  const shuffled =
+    shuffleQuestions(questions);
+
+  // 最大10問
+  quizQuestions =
+    shuffled.slice(0, Math.min(10, shuffled.length));
+
+}
+
+
+// ============================
 // ゲーム開始
 // ============================
 
@@ -219,6 +257,9 @@ function startGame() {
   level = 1;
   exp = 0;
 
+  // 今回の10問を決定
+  createQuizQuestions();
+
   updateStatus();
 
   showScreen(quizScreen);
@@ -234,7 +275,8 @@ function startGame() {
 
 function showQuestion() {
 
-  const question = questions[currentQuestion];
+  const question =
+    quizQuestions[currentQuestion];
 
   questionNumber.textContent =
     currentQuestion + 1;
@@ -258,7 +300,7 @@ function showQuestion() {
 function answerQuestion(userAnswer) {
 
   const question =
-    questions[currentQuestion];
+    quizQuestions[currentQuestion];
 
   const isCorrect =
     userAnswer === question.answer;
@@ -338,7 +380,9 @@ function nextQuestion() {
 
   currentQuestion++;
 
-  if (currentQuestion >= questions.length) {
+  if (
+    currentQuestion >= quizQuestions.length
+  ) {
 
     showFinish();
 
@@ -361,7 +405,7 @@ function showFinish() {
 
   const accuracy =
     Math.round(
-      (correctCount / questions.length) * 100
+      (correctCount / quizQuestions.length) * 100
     );
 
   correctCountElement.textContent =
