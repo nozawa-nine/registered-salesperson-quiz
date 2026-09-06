@@ -1,13 +1,4 @@
-// ============================
-// 問題データ
-// ============================
-
 let questions = [];
-
-
-// ============================
-// ゲームの状態
-// ============================
 
 let currentQuestion = 0;
 let correctCount = 0;
@@ -17,7 +8,7 @@ let exp = 0;
 
 
 // ============================
-// HTML要素を取得
+// HTML要素
 // ============================
 
 const startScreen = document.getElementById("start-screen");
@@ -50,6 +41,67 @@ const expElement = document.getElementById("exp");
 
 
 // ============================
+// CSVを正しく解析する
+// ============================
+
+function parseCSV(text) {
+
+  const rows = [];
+  let row = [];
+  let value = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === '"' && insideQuotes && nextChar === '"') {
+
+      value += '"';
+      i++;
+
+    } else if (char === '"') {
+
+      insideQuotes = !insideQuotes;
+
+    } else if (char === "," && !insideQuotes) {
+
+      row.push(value);
+      value = "";
+
+    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+
+      if (char === "\r" && nextChar === "\n") {
+        i++;
+      }
+
+      row.push(value);
+      rows.push(row);
+
+      row = [];
+      value = "";
+
+    } else {
+
+      value += char;
+
+    }
+
+  }
+
+  if (value !== "" || row.length > 0) {
+
+    row.push(value);
+    rows.push(row);
+
+  }
+
+  return rows;
+}
+
+
+// ============================
 // CSVを読み込む
 // ============================
 
@@ -57,39 +109,72 @@ async function loadQuestions() {
 
   try {
 
-    const response = await fetch("questions.csv");
+    const response = await fetch("questions.csv?v=2");
+
+    if (!response.ok) {
+
+      throw new Error(
+        "questions.csvを読み込めませんでした。"
+      );
+
+    }
 
     const text = await response.text();
 
-    const lines = text.trim().split(/\r?\n/);
+    const rows = parseCSV(text);
 
-    // 1行目は見出しなので除外
-    const dataLines = lines.slice(1);
+    // 1行目は見出し
+    const dataRows = rows.slice(1);
 
-    questions = dataLines.map(line => {
+    questions = dataRows
+      .filter(row => row.length >= 10)
+      .map(row => {
 
-      const columns = line.split(",");
+        return {
 
-      return {
-        id: columns[0],
-        chapter: columns[1],
-        category: columns[2],
-        text: columns[3],
-        answer: columns[4].trim(),
-        explanation: columns[5],
-        exp: Number(columns[6]),
-        source: columns[7],
-        year: columns[8],
-        number: columns[9]
-      };
+          id: row[0].trim(),
 
-    });
+          chapter: row[1].trim(),
 
-    console.log("問題読み込み完了:", questions);
+          category: row[2].trim(),
+
+          text: row[3].trim(),
+
+          answer: row[4].trim()
+            .replace("〇", "○")
+            .replace("✕", "×")
+            .replace("✕", "×"),
+
+          explanation: row[5].trim(),
+
+          exp: Number(row[6]) || 10,
+
+          source: row[7].trim(),
+
+          year: row[8].trim(),
+
+          number: row[9].trim()
+
+        };
+
+      });
+
+    console.log(
+      "CSV読み込み完了:",
+      questions.length,
+      "問"
+    );
+
+    console.log(questions);
 
   } catch (error) {
 
-    console.error("問題データの読み込みに失敗しました:", error);
+    console.error(error);
+
+    alert(
+      "問題データの読み込みに失敗しました。\n" +
+      error.message
+    );
 
   }
 
@@ -120,7 +205,9 @@ function startGame() {
 
   if (questions.length === 0) {
 
-    alert("問題データを読み込んでいます。少し待ってからもう一度押してください。");
+    alert(
+      "問題データが読み込まれていません。"
+    );
 
     return;
 
@@ -142,34 +229,39 @@ function startGame() {
 
 
 // ============================
-// 問題を表示
+// 問題表示
 // ============================
 
 function showQuestion() {
 
   const question = questions[currentQuestion];
 
-  questionNumber.textContent = currentQuestion + 1;
+  questionNumber.textContent =
+    currentQuestion + 1;
 
   category.textContent =
     question.chapter + "｜" + question.category;
 
-  questionTitle.textContent = question.category;
+  questionTitle.textContent =
+    question.category;
 
-  questionText.textContent = question.text;
+  questionText.textContent =
+    question.text;
 
 }
 
 
 // ============================
-// ○×回答
+// 回答
 // ============================
 
 function answerQuestion(userAnswer) {
 
-  const question = questions[currentQuestion];
+  const question =
+    questions[currentQuestion];
 
-  const isCorrect = userAnswer === question.answer;
+  const isCorrect =
+    userAnswer === question.answer;
 
   if (isCorrect) {
 
@@ -183,7 +275,8 @@ function answerQuestion(userAnswer) {
 
     resultTitle.textContent = "正解！";
 
-    expGain.textContent = "+" + question.exp + " EXP";
+    expGain.textContent =
+      "+" + question.exp + " EXP";
 
   } else {
 
@@ -195,7 +288,8 @@ function answerQuestion(userAnswer) {
 
   }
 
-  explanation.textContent = question.explanation;
+  explanation.textContent =
+    question.explanation;
 
   showScreen(resultScreen);
 
@@ -203,7 +297,7 @@ function answerQuestion(userAnswer) {
 
 
 // ============================
-// EXP処理
+// EXP
 // ============================
 
 function addExp(amount) {
@@ -224,7 +318,7 @@ function addExp(amount) {
 
 
 // ============================
-// ステータス更新
+// ステータス
 // ============================
 
 function updateStatus() {
@@ -260,19 +354,24 @@ function nextQuestion() {
 
 
 // ============================
-// 結果画面
+// 結果
 // ============================
 
 function showFinish() {
 
   const accuracy =
-    Math.round((correctCount / questions.length) * 100);
+    Math.round(
+      (correctCount / questions.length) * 100
+    );
 
-  correctCountElement.textContent = correctCount;
+  correctCountElement.textContent =
+    correctCount;
 
-  accuracyElement.textContent = accuracy;
+  accuracyElement.textContent =
+    accuracy;
 
-  totalExpElement.textContent = totalExp;
+  totalExpElement.textContent =
+    totalExp;
 
   showScreen(finishScreen);
 
@@ -280,7 +379,7 @@ function showFinish() {
 
 
 // ============================
-// もう一度
+// 再スタート
 // ============================
 
 function restartGame() {
@@ -291,30 +390,41 @@ function restartGame() {
 
 
 // ============================
-// ボタンイベント
+// ボタン
 // ============================
 
-startButton.addEventListener("click", startGame);
+startButton.addEventListener(
+  "click",
+  startGame
+);
 
-trueButton.addEventListener("click", function() {
+trueButton.addEventListener(
+  "click",
+  function() {
+    answerQuestion("○");
+  }
+);
 
-  answerQuestion("○");
+falseButton.addEventListener(
+  "click",
+  function() {
+    answerQuestion("×");
+  }
+);
 
-});
+nextButton.addEventListener(
+  "click",
+  nextQuestion
+);
 
-falseButton.addEventListener("click", function() {
-
-  answerQuestion("×");
-
-});
-
-nextButton.addEventListener("click", nextQuestion);
-
-restartButton.addEventListener("click", restartGame);
+restartButton.addEventListener(
+  "click",
+  restartGame
+);
 
 
 // ============================
-// 起動時にCSVを読み込む
+// 起動
 // ============================
 
 loadQuestions();
