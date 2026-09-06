@@ -13,23 +13,59 @@
 
     <header>
       <h1>登録販売者クイズ</h1>
+
       <div class="status">
         <span>Lv.<span id="level">1</span></span>
         <span>EXP <span id="exp">0</span> / 100</span>
       </div>
     </header>
 
+
     <main>
 
+      <!-- ============================ -->
+      <!-- START画面 -->
+      <!-- ============================ -->
+
       <div id="start-screen">
+
         <h2>○×クイズ</h2>
-        <p>登録販売者試験の知識を<br>一問一答で確認しよう。</p>
+
+        <p>
+          登録販売者試験の知識を<br>
+          一問一答で確認しよう。
+        </p>
+
+
+        <div class="question-count-select">
+
+          <h3>出題数</h3>
+
+          <select id="question-count">
+
+            <option value="10">10問</option>
+
+            <option value="20">20問</option>
+
+            <option value="50">50問</option>
+
+            <option value="all">全問</option>
+
+          </select>
+
+        </div>
+
 
         <button id="start-button" class="main-button">
           START
         </button>
+
       </div>
 
+
+      <!-- ============================ -->
+      <!-- クイズ画面 -->
+      <!-- ============================ -->
 
       <div id="quiz-screen" class="hidden">
 
@@ -37,19 +73,26 @@
           第<span id="question-number">1</span>問
         </div>
 
+
         <div class="category" id="category">
-          第1章｜医薬品に共通する特性と基本的な知識
+          第1章｜医薬品の本質
         </div>
+
 
         <h2 id="question-title">
           医薬品の本質
         </h2>
 
+
         <div class="question-box">
+
           <p id="question-text"></p>
+
         </div>
 
+
         <div class="answer-buttons">
+
           <button id="true-button" class="answer-button true">
             ○
           </button>
@@ -57,10 +100,15 @@
           <button id="false-button" class="answer-button false">
             ×
           </button>
+
         </div>
 
       </div>
 
+
+      <!-- ============================ -->
+      <!-- 結果画面 -->
+      <!-- ============================ -->
 
       <div id="result-screen" class="hidden">
 
@@ -70,10 +118,15 @@
 
         <p id="exp-gain"></p>
 
+
         <div class="explanation-box">
+
           <h3>解説</h3>
+
           <p id="explanation"></p>
+
         </div>
+
 
         <button id="next-button" class="main-button">
           次の問題
@@ -82,21 +135,35 @@
       </div>
 
 
+      <!-- ============================ -->
+      <!-- 最終結果 -->
+      <!-- ============================ -->
+
       <div id="finish-screen" class="hidden">
 
         <h2>RESULT</h2>
 
+
         <div class="score">
-          <span id="correct-count">0</span> / 10
+
+          <span id="correct-count">0</span>
+          /
+          <span id="total-question-count">10</span>
+
         </div>
 
-        <p>
-          正答率 <span id="accuracy">0</span>%
-        </p>
 
         <p>
-          獲得EXP <span id="total-exp">0</span>
+          正答率
+          <span id="accuracy">0</span>%
         </p>
+
+
+        <p>
+          獲得EXP
+          <span id="total-exp">0</span>
+        </p>
+
 
         <button id="restart-button" class="main-button">
           もう一度
@@ -108,7 +175,8 @@
 
   </div>
 
-  <script src="script.js?v=2"></script>
+
+  <script src="script.js?v=3"></script>
 
 </body>
 </html>
