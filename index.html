@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登録販売者クイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+  <div class="app">
+
+    <header>
+      <h1>登録販売者クイズ</h1>
+      <div class="status">
+        <span>Lv.<span id="level">1</span></span>
+        <span>EXP <span id="exp">0</span> / 100</span>
+      </div>
+    </header>
+
+    <main>
+
+      <div id="start-screen">
+        <h2>○×クイズ</h2>
+        <p>登録販売者試験の知識を<br>一問一答で確認しよう。</p>
+
+        <button id="start-button" class="main-button">
+          START
+        </button>
+      </div>
+
+
+      <div id="quiz-screen" class="hidden">
+
+        <div class="question-number">
+          第<span id="question-number">1</span>問
+        </div>
+
+        <div class="category" id="category">
+          第1章｜医薬品に共通する特性と基本的な知識
+        </div>
+
+        <h2 id="question-title">
+          医薬品の本質
+        </h2>
+
+        <div class="question-box">
+          <p id="question-text"></p>
+        </div>
+
+        <div class="answer-buttons">
+          <button id="true-button" class="answer-button true">
+            ○
+          </button>
+
+          <button id="false-button" class="answer-button false">
+            ×
+          </button>
+        </div>
+
+      </div>
+
+
+      <div id="result-screen" class="hidden">
+
+        <div id="result-icon"></div>
+
+        <h2 id="result-title"></h2>
+
+        <p id="exp-gain"></p>
+
+        <div class="explanation-box">
+          <h3>解説</h3>
+          <p id="explanation"></p>
+        </div>
+
+        <button id="next-button" class="main-button">
+          次の問題
+        </button>
+
+      </div>
+
+
+      <div id="finish-screen" class="hidden">
+
+        <h2>RESULT</h2>
+
+        <div class="score">
+          <span id="correct-count">0</span> / 10
+        </div>
+
+        <p>
+          正答率 <span id="accuracy">0</span>%
+        </p>
+
+        <p>
+          獲得EXP <span id="total-exp">0</span>
+        </p>
+
+        <button id="restart-button" class="main-button">
+          もう一度
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
