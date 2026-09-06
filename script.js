@@ -23,6 +23,10 @@ const trueButton = document.getElementById("true-button");
 const falseButton = document.getElementById("false-button");
 const nextButton = document.getElementById("next-button");
 const restartButton = document.getElementById("restart-button");
+const questionCountSelect =　document.getElementById("question-count");
+
+const totalQuestionCountElement =
+  document.getElementById("total-question-count");
 
 const questionNumber = document.getElementById("question-number");
 const category = document.getElementById("category");
@@ -229,9 +233,23 @@ function createQuizQuestions() {
   const shuffled =
     shuffleQuestions(questions);
 
-  // 最大10問
-  quizQuestions =
-    shuffled.slice(0, Math.min(10, shuffled.length));
+
+  if (selectedQuestionCount === "all") {
+
+    quizQuestions = shuffled;
+
+  } else {
+
+    const count =
+      Number(selectedQuestionCount);
+
+    quizQuestions =
+      shuffled.slice(
+        0,
+        Math.min(count, shuffled.length)
+      );
+
+  }
 
 }
 
@@ -257,7 +275,9 @@ function startGame() {
   totalExp = 0;
   level = 1;
   exp = 0;
-
+  
+selectedQuestionCount = questionCountSelect.value;
+  
   // 今回の10問を決定
   createQuizQuestions();
 
@@ -411,6 +431,9 @@ function showFinish() {
 
   correctCountElement.textContent =
     correctCount;
+
+  totalQuestionCountElement.textContent =
+    quizQuestions.length;
 
   accuracyElement.textContent =
     accuracy;
